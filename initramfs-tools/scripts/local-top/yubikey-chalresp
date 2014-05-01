@@ -1,0 +1,39 @@
+#!/bin/sh --
+
+yubikey_slot=2
+
+PREREQ=""
+prereqs()
+{
+   echo "$PREREQ"
+}
+
+case $1 in
+   prereqs)
+      prereqs
+      exit 0
+   ;;
+esac
+
+. /scripts/functions
+
+while true; do
+    echo "Please enter your yubikey challenge (leave empty to switch to password mode):"
+    read -s challenge
+    if [ "$challenge" != "" ]; then
+        echo "Sent challenge to the yubikey..."
+        /usr/bin/ykchalresp "-$yubikey_slot" "$challenge" 1>/tmp/keyfile
+        if [ $? == 0 ]; then
+            echo "Got yubikey response."
+            exit 0
+        fi
+    	echo "The yubikey challenge failed."
+    else
+        echo "Please enter your password:"
+        read -s password
+	echo -n "$password" 1>/tmp/keyfile
+	exit 0
+    fi
+done
+
+exit 0
