@@ -1,2 +1,3 @@
 #!/bin/sh
-echo -n "`cat ../tmp/keyfile`"
+key=`cat ../tmp/keyfile`
+echo -n "$key"
